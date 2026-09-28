@@ -2,9 +2,9 @@
 
 A light, developer-focused playground demonstrating three real uses of the Python `laya.Router` API. All decisions are produced by Laya inference. There are no keyword-routing fallbacks, fake result timers, or prerecorded browser actions.
 
-**Website:** https://infinitexyy.github.io/laya-lab/
+**Source:** https://github.com/InfiniteXyy/laya-lab
 
-GitHub Pages serves the interface. To run the demos, start the local backend below, open the published site, choose **Connect Laya**, and connect to `http://127.0.0.1:3000`. Allow local network access if your browser prompts. If your browser blocks this connection, use the identical interface at the local URL instead. Python and Playwright run on your computer; GitHub Pages does not run the backend. A connection is only attempted after you choose Connect. Reconnect after reloading the published page.
+Run the website and its Python/Playwright backend locally using the instructions below. This repository does not automatically deploy a website.
 
 ## Run
 
@@ -104,8 +104,3 @@ Run the app first for `test:live`. It exercises the actual backend and model: we
 
 The English checkpoint currently emits a Laya warning about an out-of-range temperature bucket for choices with 11+ options. The bundled storefront's action lists remain below that size. Displayed scores should still be treated as model probabilities, not calibrated guarantees.
 
-## Publishing
-
-The Pages workflow publishes only `public/` when `main` changes. Relative asset paths support project Pages URLs. The sample log file is example input, not a cached AI result. All routing, log ranking, and browser decisions still call the real backend.
-
-The backend binds only to loopback and permits browser requests from its local origin and `https://infinitexyy.github.io`. Other origins are rejected. CORS operates at the origin level, so other projects under that same GitHub Pages origin share this allowance. No credentials, checkpoints, or private logs are published. A standalone public backend would require a separate Python/Playwright host and authentication; none is provisioned here.
