@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Explore Laya. Route a request, guide a browser, or find the signal in your logs.">
+  <title>Laya Lab</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="./" aria-label="Laya Lab home"><img src="./favicon.svg" alt="" width="28" height="28">laya<span>/ lab</span></a>
+    <nav class="tabs" aria-label="Demos">
+      <button class="nav-item active" data-view="classify" aria-current="page">Routing</button>
+      <button class="nav-item" data-view="e2e">Browser</button>
+      <button class="nav-item" data-view="logs">Logs</button>
+    </nav>
+    <button class="engine-card" id="connection-button" aria-haspopup="dialog"><span class="status-dot loading" id="engine-dot"></span><span id="engine-label">Connecting</span><span id="engine-detail" class="sr-only">Local Python Router</span></button>
+  </header>
+  <main class="main-content">
+    <section class="page-heading"><div class="hero-copy"><span class="eyebrow"><span class="eyebrow-line"></span> THE LAYA PLAYGROUND</span><h1><span class="gradient-text">Small models.</span><br><span id="page-title">Big decisions.</span></h1><p id="page-subtitle">One prompt. The right model and tools.</p></div><div class="hero-art" aria-hidden="true"><div class="art-grid"></div><span class="orbit-label label-in">input</span><span class="orbit-label label-out">decision</span><svg viewBox="0 0 320 260" fill="none"><defs><linearGradient id="layer" x1="80" y1="40" x2="250" y2="230" gradientUnits="userSpaceOnUse"><stop stop-color="#78caff"/><stop offset=".5" stop-color="#9670ff"/><stop offset="1" stop-color="#6339d6"/></linearGradient></defs><path d="M20 130H75M245 130H300" stroke="#b9a7e7" stroke-dasharray="4 5"/><path d="m160 128 88 49-88 49-88-49 88-49Z" fill="#ece4ff" stroke="#cbbbeb"/><path d="m160 93 88 49-88 49-88-49 88-49Z" fill="#d6c5fc" fill-opacity=".7" stroke="#b39be7"/><path d="m160 42 88 49v31l-88 50-88-50V91l88-49Z" fill="url(#layer)"/><path d="m72 91 88 50 88-50M160 141v31" stroke="white" stroke-opacity=".45"/><path d="m149 73-25 28 34 19 39-23-22-12-22 13-7-4 19-12-16-9Z" fill="white"/><circle cx="20" cy="130" r="4" fill="#c8b8ef"/><circle cx="300" cy="130" r="4" fill="#8d5fea"/></svg></div></section>
+
+    <section id="view-classify" class="view active narrow" aria-label="Classification demo">
+      <div class="panel routing-card"><div class="workbench-bar"><span><span class="code-mark">⌘</span> route.request</span><span>01 / ROUTING</span></div>
+        <label for="prompt" class="field-label">What would you like to do?</label>
+        <textarea id="prompt" maxlength="1800" spellcheck="false">My app crashes with a TypeError when a user logs in. Read the auth code, find the bug, and test the fix.</textarea>
+        <div class="composer-bottom"><div class="example-chips" aria-label="Example requests"><button data-example="debug">Debug code</button><button data-example="weather">Check weather</button><button data-example="architecture">Solve a complex problem</button></div><span id="prompt-count" class="sr-only"></span></div>
+        <div class="action-row"><span class="privacy-note">Processed on your device.</span><button id="classify-button" class="primary-button"><span hidden></span><span>Route request</span></button></div>
+        <div id="classify-error" class="error-message" role="alert" hidden></div>
+        <div id="decision-canvas" class="decision-result" aria-live="polite" hidden>
+          <div class="result-model"><span class="model-symbol" aria-hidden="true">✳</span><div><span class="result-label" id="route-state">Selected model</span><strong id="flow-model">Choosing…</strong></div></div>
+          <div class="result-tools"><span class="result-label">Tools</span><div id="flow-tools">—</div></div>
+        </div>
+      </div>
+      <details class="disclosure" id="classification-details" hidden><summary>Decision details</summary><div class="details-body">
+        <div class="decision-stats"><div><span>Intent</span><strong id="flow-intent">—</strong></div><div><span>Time</span><strong id="route-time">—</strong></div><div><span>Model probability</span><strong id="route-confidence">—</strong></div><div><span>Tools</span><strong id="route-tool-count">—</strong></div></div>
+        <div class="model-cards"><article class="model-card" data-model="luna"><h3>Luna</h3><p>Everyday tasks</p><div class="model-prob"><strong>—</strong><div class="prob-track"><i></i></div></div></article><article class="model-card" data-model="sol"><h3>Sol</h3><p>Coding & analysis</p><div class="model-prob"><strong>—</strong><div class="prob-track"><i></i></div></div></article><article class="model-card" data-model="astra"><h3>Astra</h3><p>Deep reasoning</p><div class="model-prob"><strong>—</strong><div class="prob-track"><i></i></div></div></article></div>
+        <p id="model-result-label" class="detail-note"></p><div id="tools-section" hidden><h3 class="detail-heading">Tool decisions</h3><div id="tool-decisions" class="tool-decisions"></div></div>
+        <details class="raw-panel"><summary>View API response</summary><pre id="classify-raw">Run a request to inspect its response.</pre></details>
+        <p class="detail-note">This demo selects a model and tools. It does not execute the downstream request.</p>
+      </div></details>
+    </section>
+
+    <section id="view-e2e" class="view" aria-label="Browser pilot demo" hidden>
+      <div class="e2e-layout">
+        <section class="panel e2e-controls"><label class="field-label" for="e2e-task">Task</label><textarea id="e2e-task" maxlength="700">Add Studio Headphones to the cart.</textarea><label class="field-label" for="e2e-expect">Expected result</label><textarea id="e2e-expect" maxlength="500">The cart contains Studio Headphones and the cart count is 1.</textarea><label class="field-label" for="e2e-scenario">Try an example</label><select id="e2e-scenario"><option value="cart">Add a product</option><option value="filter">Filter the catalog</option><option value="search">Search for a product</option><option value="impossible">An impossible request</option></select><button id="e2e-button" class="primary-button"><span>Run test</span></button><button id="e2e-stop" class="secondary-button" hidden>Stop test</button><div id="e2e-error" class="error-message" role="alert" hidden></div><p class="control-note">To type text, put it in “double quotes”.</p></section>
+        <section class="panel browser-panel"><div class="browser-chrome"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="address-bar">Orbit · Demo store</span><span id="browser-state" class="browser-state">Ready</span></div><div class="browser-stage"><iframe src="./sandbox.html" title="Interactive Orbit storefront preview" id="sandbox-preview"></iframe><img id="browser-screenshot" alt="Latest real Playwright browser observation" hidden><span id="browser-live-label" class="browser-overlay" hidden>Live capture</span></div><span id="browser-observation-count" class="sr-only"></span></section>
+      </div>
+      <div id="e2e-verdict" class="verdict-panel" hidden role="status"></div>
+      <details class="disclosure"><summary>Run details <span id="trace-count" class="summary-meta">0 actions</span></summary><div class="details-body"><div id="e2e-trace" class="trace-list"><p class="empty-note">Your test steps will appear here.</p></div><details class="raw-panel"><summary>View observations & API responses</summary><pre id="e2e-raw">Run a test to inspect its observations.</pre></details><p class="detail-note">Laya chooses each action and the region to inspect. A pass requires its expectation probability to reach 60%. This is a model judgment; check the captured screen to verify it. Tests run in a fresh local storefront, with a limit of 10 actions.</p></div></details>
+    </section>
+
+    <section id="view-logs" class="view narrow" aria-label="Signal finder demo" hidden>
+      <section class="panel log-query-panel"><label for="log-query" class="field-label">What are you investigating?</label><input id="log-query" maxlength="500" value="Why are checkout requests failing and timing out?" placeholder="Ask a question about your logs…"><div class="log-suggestions"><button data-log-query="Why are checkout requests failing and timing out?">Checkout</button><button data-log-query="Why are users unable to sign in?">Login</button><button data-log-query="Why is product search broken?">Search</button></div><div class="action-row"><span class="privacy-note">Find what matters in the noise.</span><button id="logs-button" class="primary-button"><span>Find relevant logs</span></button></div></section>
+      <details class="disclosure log-source"><summary>Log source <span class="summary-meta"><span id="log-line-count">240</span> lines</span></summary><div class="details-body"><div class="source-actions"><button id="load-sample" class="text-button">Use sample logs</button><label class="text-button upload-label" for="log-upload">Import file<input type="file" id="log-upload" accept=".log,.txt,.jsonl" hidden></label></div><div class="log-editor-label"><span>Up to 2,000 lines</span><span>Sample logs</span></div><textarea id="log-source" spellcheck="false" aria-label="Log lines to analyze" placeholder="Paste your logs here."></textarea></div></details>
+      <section class="panel signal-panel" id="signal-panel" hidden><div class="results-heading"><h2>Relevant logs</h2><span class="state-badge" id="log-state">Ready</span></div><div id="log-progress" class="log-progress" hidden><div class="progress-track"><i></i></div><span>Reading your logs…</span></div><div id="log-summary" class="log-summary" hidden></div><div id="log-results" class="log-results"></div><button id="logs-stop" class="secondary-button" hidden>Stop analysis</button></section>
+      <div id="logs-error" class="error-message" role="alert" hidden></div><details class="disclosure" id="logs-details" hidden><summary>Analysis details</summary><div class="details-body"><p class="detail-note">Every unique message is evaluated by Laya. Relevance is P(critical) + 0.5 × P(relevant). Identical messages share a score, with all original lines preserved.</p><details class="raw-panel"><summary>View API responses</summary><pre id="logs-raw"></pre></details></div></details>
+    </section>
+    <footer class="page-footer"><span>Built with <strong>Laya</strong><span class="footer-slash"> / </span>Decisions, at runtime.</span><div><button id="how-button" class="text-button">How it works</button><a href="https://github.com/InfiniteXyy/laya-lab" target="_blank" rel="noreferrer">GitHub ↗</a></div></footer>
+  </main>
+  <dialog id="how-dialog"><button id="close-dialog" class="dialog-close" aria-label="Close explanation">×</button><h2>A little about Laya.</h2><p>All three demos call a local Python Laya Router. Your prompts and logs stay on this machine.</p><div class="how-row"><h3>Routing</h3><p>Selects a model and tools for your request.</p></div><div class="how-row"><h3>Browser</h3><p>Chooses real Playwright actions and checks your expected result.</p></div><div class="how-row"><h3>Logs</h3><p>Ranks each message by its relevance to your question.</p></div><p class="detail-note">Open the details below a demo to see model probabilities and actual API responses. Model decisions can be wrong.</p><a class="text-button" href="https://github.com/NandhaKishorM/laya" target="_blank" rel="noreferrer">Explore Laya ↗</a></dialog>
+  <dialog id="connection-dialog"><button id="close-connection" class="dialog-close" aria-label="Close connection settings">×</button><span class="eyebrow">LOCAL INFERENCE</span><h2>Connect to Laya.</h2><p>This website calls your local Python Router. Start the server, then connect to run all three demos.</p><pre class="setup-command">npm run dev</pre><p class="detail-note">First time? <a href="https://github.com/InfiniteXyy/laya-lab#run" target="_blank" rel="noreferrer">Follow the setup guide ↗</a></p><label class="field-label" for="backend-url">Local server URL</label><input id="backend-url" type="url" value="http://127.0.0.1:3000" spellcheck="false"><p class="detail-note">If your browser asks, allow access to your local network. You can also open the app directly at the local server URL.</p><p id="connection-message" role="status" class="detail-note"></p><button class="primary-button" id="connect-backend">Connect server</button></dialog>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
