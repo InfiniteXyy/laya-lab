@@ -18,14 +18,15 @@ $('#connect-backend').onclick = async () => {
   try {
     const url = new URL($('#backend-url').value.trim());
     if (!['127.0.0.1', 'localhost', '[::1]'].includes(url.hostname) || !['http:', 'https:'].includes(url.protocol) || url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw new Error('Enter a local server origin, such as http://127.0.0.1:3000.');
-    const response = await fetch(`${url.origin}/api/health`, { signal: AbortSignal.timeout(8000) });
+    $('#open-local').href = `${url.origin}/${location.hash}`;
+    const response = await fetch(`${url.origin}/api/health`, { signal: AbortSignal.timeout(30000) });
     if (!response.ok) throw new Error(`Server returned ${response.status}.`);
     const data = await response.json();
     if (data.engine !== 'laya.Router') throw new Error('This server is not a Laya Router backend.');
     backend = url.origin;
     $('#connection-message').textContent = '';
     $('#connection-dialog').close(); await health();
-  } catch (error) { $('#connection-message').textContent = `${error.message} Start npm run dev and allow local network access if your browser asks.`; }
+  } catch (error) { $('#connection-message').textContent = `${error.name === 'TypeError' || error.name === 'TimeoutError' ? 'Could not reach the server.' : error.message} Check that npm run dev is running, allow local network access, or open the local playground below.`; }
   finally { button.disabled = false; }
 };
 const headings = {
